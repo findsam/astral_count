@@ -5,4 +5,4 @@ Essential lightweight addon for all Balance Druid players that calculates astral
 
 #### Conditions
 1. Icon hidden when NO starsurge is available.
-2. Calculate based on aura status (if player has incarn, or free procs).
+2. Calculate based on player aura status.
