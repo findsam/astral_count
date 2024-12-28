@@ -1,54 +1,60 @@
 -- Create the main frame for the display
 local frame = CreateFrame("Frame", "AstralPowerFrame", UIParent)
-frame:SetSize(54, 54) -- Adjust the size as needed
-frame:SetPoint("CENTER", UIParent, "CENTER") -- Default position in the center
+frame:SetSize(46, 46) -- Ensure the frame matches the size of the icon
+frame:SetPoint("CENTER", UIParent, "CENTER") 
+frame:SetScale(1.125)
 
--- Add a border texture to the frame (like an action button)
+-- Add a border texture to the frame
 local border = frame:CreateTexture(nil, "BACKGROUND")
-border:SetTexture("Interface\\Buttons\\UI-Quickslot2") -- Action button border texture
-border:SetAllPoints(frame)
+border:SetTexture("Interface\\Buttons\\UI-Quickslot2")
+border:SetAllPoints(frame) -- Ensure the border fills the frame exactly 
 
 -- Add the Starsurge spell icon as the background
 local background = frame:CreateTexture(nil, "ARTWORK")
-background:SetTexture("Interface\\Icons\\spell_arcane_arcane03") -- Starsurge spell icon
-background:SetAllPoints(frame) -- Make the icon fill the entire frame
+background:SetTexture("Interface\\Icons\\spell_arcane_arcane03")
+background:SetAllPoints(frame) -- Ensure the icon fills the frame exactly 
 
 -- Create a font string to display the number of Starsurges
 local starsurgeCountText = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-starsurgeCountText:SetPoint("CENTER", frame, "CENTER") -- Center the text inside the frame
+starsurgeCountText:SetPoint("CENTER", frame, "CENTER")
 starsurgeCountText:SetTextColor(0, 0.75, 1)
-starsurgeCountText:SetFont("Fonts\\FRIZQT__.TTF", 32, "OUTLINE")  -- Font size and outline
+starsurgeCountText:SetFont("Fonts\\FRIZQT__.TTF", 32, "OUTLINE") 
 
 -- Function to calculate and display the number of Starsurges
 local function UpdateStarsurgeCount()
-    local currentPower = UnitPower("player", Enum.PowerType.LunarPower) -- Astral Power enum
-    local isIncarnationActive = AuraUtil.FindAuraByName("Incarnation: Chosen of Elune", "player") -- Check for Incarnation buff
-    local hasTouchTheCosmos = AuraUtil.FindAuraByName("Touch the Cosmos", "player") -- Check for Touch the Cosmos buff
-    local starsurgeCost = 36 -- Default Starsurge cost
+    local currentPower = UnitPower("player", Enum.PowerType.LunarPower)
+    local isIncarnationActive = AuraUtil.FindAuraByName("Incarnation: Chosen of Elune", "player")
+    local hasTouchTheCosmos = AuraUtil.FindAuraByName("Touch the Cosmos", "player")
+    local starsurgeCost = 36 
 
-    -- Adjust Starsurge cost based on active buffs
     if isIncarnationActive then
-        starsurgeCost = 27 -- Reduced cost during Incarnation
+        starsurgeCost = 27
     elseif hasTouchTheCosmos then
-        starsurgeCost = 30 -- Adjust cost for Touch the Cosmos
-    end
+        starsurgeCost = 30
+    end 
 
-    -- Calculate the number of Starsurges available
-    local starsurgesAvailable = math.floor(currentPower / starsurgeCost)
+    local starsurgesAvailable = math.floor(currentPower / starsurgeCost) 
 
-    -- Update the text and toggle frame visibility
     if starsurgesAvailable > 0 then
         starsurgeCountText:SetText(starsurgesAvailable)
-        frame:Show() -- Show the frame if Starsurges are available
+        frame:Show() 
+
+        -- Show glow only if more than 2 Starsurges are available
+        if starsurgesAvailable > 2 then
+            ActionButton_ShowOverlayGlow(frame) -- Apply the glow to the frame
+        else
+            ActionButton_HideOverlayGlow(frame) -- Hide the glow
+        end
     else
-        frame:Hide() -- Hide the frame if no Starsurges are available
+        frame:Hide()
+        ActionButton_HideOverlayGlow(frame)
     end
-end
+end 
 
 -- Register events to update the Starsurge count
 frame:RegisterEvent("UNIT_POWER_UPDATE")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-frame:RegisterEvent("UNIT_AURA") -- Listen for changes in buffs/debuffs
+frame:RegisterEvent("UNIT_AURA") 
 
 frame:SetScript("OnEvent", function(self, event, ...)
     if event == "UNIT_POWER_UPDATE" then
@@ -61,7 +67,7 @@ frame:SetScript("OnEvent", function(self, event, ...)
     else
         UpdateStarsurgeCount()
     end
-end)
+end) 
 
 -- Enable dragging functionality for the frame
 frame:SetMovable(true)
@@ -72,10 +78,10 @@ frame:SetScript("OnDragStart", function(self)
 end)
 frame:SetScript("OnDragStop", function(self)
     self:StopMovingOrSizing()
-end)
+end) 
 
 -- Add a slash command to lock/unlock dragging
-SLASH_ASTRALPOWER1 = "/aplock"
+SLASH_ASTRALPOWER1 = "/aps"
 SlashCmdList["ASTRALPOWER"] = function()
     if frame:IsMovable() then
         frame:SetMovable(false)
@@ -87,6 +93,3 @@ SlashCmdList["ASTRALPOWER"] = function()
         print("Astral Power Frame Unlocked.")
     end
 end
-
--- Run the update function once to initialize the display
-UpdateStarsurgeCount()
