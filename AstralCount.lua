@@ -18,7 +18,7 @@ background:SetAllPoints(frame) -- Ensure the icon fills the frame exactly
 local starsurgeCountText = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 starsurgeCountText:SetPoint("CENTER", frame, "CENTER")
 starsurgeCountText:SetTextColor(0, 0.75, 1)
-starsurgeCountText:SetFont("Fonts\\FRIZQT__.TTF", 32, "OUTLINE") 
+starsurgeCountText:SetFont("Fonts\\FRIZQT__.TTF", 28, "OUTLINE") 
 
 -- Function to calculate and display the number of Starsurges
 local function UpdateStarsurgeCount()
